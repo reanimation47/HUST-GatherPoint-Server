@@ -1,13 +1,59 @@
-<mxfile host="65bd71144e">
-    <diagram id="pfERNdj8Jhbb--AqRQc9" name="Overview">
-        <mxGraphModel dx="876" dy="729" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
-            <root>
-                <mxCell id="0"/>
-                <mxCell id="1" parent="0"/>
-                <mxCell id="2" value="TEST" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="365" y="250" width="120" height="60" as="geometry"/>
-                </mxCell>
-            </root>
-        </mxGraphModel>
-    </diagram>
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36" version="24.7.17">
+  <diagram id="pfERNdj8Jhbb--AqRQc9" name="Overview">
+    <mxGraphModel dx="1224" dy="809" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="PFLkKTAhucBdikDD3LUr-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="2" target="PFLkKTAhucBdikDD3LUr-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2" value="MainRouter" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="160" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="PFLkKTAhucBdikDD3LUr-2" target="PFLkKTAhucBdikDD3LUr-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-2" value="Controllers" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="270" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-4" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;HTTP&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="120" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PFLkKTAhucBdikDD3LUr-5" target="2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-5" value="Request" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="70" y="185" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PFLkKTAhucBdikDD3LUr-7" target="PFLkKTAhucBdikDD3LUr-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="PFLkKTAhucBdikDD3LUr-7" target="PFLkKTAhucBdikDD3LUr-12">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="290" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-7" value="Services" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PFLkKTAhucBdikDD3LUr-8" target="PFLkKTAhucBdikDD3LUr-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-8" value="MongoDBClient&lt;br&gt;(database access)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="170" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-11" value="MongoDB" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" vertex="1" parent="1">
+          <mxGeometry x="720" y="165" width="100" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-12" value="External APIs" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="710" y="270" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="PFLkKTAhucBdikDD3LUr-17" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Business logic&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="460" y="120" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
 </mxfile>
