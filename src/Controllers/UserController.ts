@@ -5,6 +5,7 @@ import { APIRequestHandler } from '../Utils/API_Request_Handler';
 import { MongoDBController } from '../MongoDB/MongoDBController';
 import { DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
 import { DB_TableName } from '../Configurations/Conf_MongoDB';
+import { PasswordHandler } from '../Utils/User_Password_Handler';
 
 type UserID = Pick<DB_UserModel, "username">
 
@@ -55,7 +56,7 @@ export class UserController
             //Register new user
             const insertResult = await usersData.insertOne({
                 username: registerReq.username,
-                hashed_password: registerReq.password, //TODO: hash this
+                hashed_password: await PasswordHandler.HashPassword(registerReq.password), //TODO: hash this
                 user_type: DB_UserType.User
             })
             
