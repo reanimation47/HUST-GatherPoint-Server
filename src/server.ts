@@ -9,8 +9,10 @@ dotenv.config();
 const app: Application = express();
 const port = process.env.PORT || 8000;
 
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 app.use(function (req, res, next) {
-    console.log("Middleware called??");
+    // console.log("Middleware called??");
     next();
 });
 app.use(MainRouter())//?
@@ -19,6 +21,10 @@ app.use(MainRouter())//?
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to Express & TypeScript Server OKY');
 });
+// app.post('/user-login', (req: Request, res: Response) => {
+//     console.log(req.body)
+//   res.send();
+// });
 
 
 // app.get('/user-login', (req: Request, res: Response) => {
