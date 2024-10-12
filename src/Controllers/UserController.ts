@@ -10,6 +10,7 @@ export class UserController
         res.send({
             message: "User login API test success!!",
             provided_username: loginReq.username,
+            provided_password: loginReq.password,//for testing
             code: 200
         })
         next()
