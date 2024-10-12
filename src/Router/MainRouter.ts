@@ -10,7 +10,6 @@ userRouter.get('/user-api-test', UserController.UserAPITest)
 
 export function MainRouter(): Router
 {
-    console.log("Middleware")
     return userRouter
 }
 

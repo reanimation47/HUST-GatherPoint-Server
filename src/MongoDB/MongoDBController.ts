@@ -1,19 +1,32 @@
 import * as mongoDB from "mongodb";
-export class MongoDBController
+export class MongoDBController//Singleton class
 {
+    private static instance: MongoDBController
+    private constructor() {}
+    static getInstance() 
+    {
+        if (this.instance) 
+        {
+            return this.instance;
+        }
+        this.instance = new MongoDBController();
+        return this.instance;
+    }
+    
     private db_url: string = "mongodb://localhost:27017"//TODO:hide this
     
     private db_client: mongoDB.MongoClient
+    get client(): mongoDB.MongoClient {return this.db_client}
     private async connectDB()
     {
         const client: mongoDB.MongoClient = new mongoDB.MongoClient(this.db_url)
         try {
             await client.connect()
-            console.log("DB client connected")
-            
             // Send a ping to confirm a successful connection
             await client.db("admin").command({ping:1})
-            console.log("DB client pinged")
+            this.db_client = client
+            console.log("MongoDB client connected")
+            
             
         }finally{
             // Ensures that the client will close when you finish/error
@@ -21,9 +34,14 @@ export class MongoDBController
         }
     }
     
-    async InitDB()
+    async EstablishDBConnection()
     {
-        this.connectDB().catch(console.dir)
+        await this.connectDB().catch(console.dir)
+    }
+    
+    IsConnected() :boolean
+    {
+        return this.db_client != undefined
     }
     
     
