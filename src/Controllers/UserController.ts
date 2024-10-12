@@ -5,7 +5,9 @@ import { APIRequestHandler } from '../Utils/API_Request_Handler';
 import { MongoDBClient } from '../MongoDB/MongoDBClient';
 import { DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
 import { DB_TableName } from '../Configurations/Conf_MongoDB';
-import { PasswordHandler } from '../Utils/User_Password_Handler';
+import { AuthenticationHandler } from '../Utils/User_Authentication_Handler';
+import { DateHandler } from '../Utils/Date_Handler';
+import { AuthConf } from '../Configurations/Conf_Authentication';
 
 type UserID = Pick<DB_UserModel, "username">
 
@@ -47,7 +49,7 @@ export class UserController
                     }
                 }
                 //If username exists, check if the password is correct
-                const passwordIsCorrect:boolean = await PasswordHandler.ComparePassword(loginReq.password, targetUser.hashed_password)
+                const passwordIsCorrect:boolean = await AuthenticationHandler.ComparePassword(loginReq.password, targetUser.hashed_password)
                 if (!passwordIsCorrect)
                 {
                     throw {
@@ -57,11 +59,35 @@ export class UserController
                 }
             }
             
+            //Generate authentication token & update to user
+            const authToken:string = await AuthenticationHandler.GenerateRandomAuthToken()
+            const authToken_epiretime = DateHandler.GetDateTimeXHoursFromNow(AuthConf.AuthToken_Duration_Hours)
+            const updateResult = await usersData.updateOne(
+                {username: loginReq.username}, 
+                {
+                    $set: {
+                        authentication: {
+                            accessToken: authToken,
+                            expireTime: authToken_epiretime.toISOString()
+                        }
+                    }
+                }
+            )
+            if (!updateResult.acknowledged)
+            {
+                throw {
+                    message: `Failed to update user ${loginReq.username} auth token`,
+                    code: APIErrorCode.UserLoginRequest_CannotUpdateUserAuthToken
+                }
+            }
+            
             
             res.send({
-                message: "User login API test success!!",
-                provided_username: loginReq.username,
-                provided_password: loginReq.password,//for testing
+                message: "User login success!!",
+                // provided_username: loginReq.username,
+                // provided_password: loginReq.password,//for testing
+                authToken: authToken,
+                authToken_epiretime: authToken_epiretime.toISOString(),
                 code: CommonSuccessCode.APIRequestSuccess 
             })
             next()
@@ -107,7 +133,7 @@ export class UserController
             //Register new user
             const insertResult = await usersData.insertOne({
                 username: registerReq.username,
-                hashed_password: await PasswordHandler.HashPassword(registerReq.password), //TODO: hash this
+                hashed_password: await AuthenticationHandler.HashPassword(registerReq.password), //TODO: hash this
                 user_type: DB_UserType.User
             })
             
@@ -124,9 +150,8 @@ export class UserController
             
             res.send({
                 message: "User registeration success",
-                provided_username: registerReq.username,
-                provided_password: registerReq.password,//for testing
-                target_user: targetUser,
+                // provided_username: registerReq.username,
+                // provided_password: registerReq.password,//for testing
                 code: CommonSuccessCode.APIRequestSuccess 
             })
             next()

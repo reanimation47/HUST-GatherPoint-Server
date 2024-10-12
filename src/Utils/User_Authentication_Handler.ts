@@ -1,8 +1,10 @@
 import bcrypt from "bcrypt"
+import crypto from "crypto"
 import { CommonErrorCode } from "../Models/Common/ErrorCodes"
-export class PasswordHandler
+import { AuthConf } from "../Configurations/Conf_Authentication"
+export class AuthenticationHandler
 {
-    static async HashPassword(pass: string, salt = PasswordHandler.defaultSalt())
+    static async HashPassword(pass: string, salt = AuthenticationHandler.defaultSalt())
     {
         try{
             return await bcrypt.hash(pass, salt)
@@ -18,6 +20,11 @@ export class PasswordHandler
     static async ComparePassword(input: string, hashed: string)
     {
         return await bcrypt.compare(input, hashed)
+    }
+    
+    static async GenerateRandomAuthToken()
+    {
+        return crypto.randomBytes(AuthConf.AuthToken_BytesCount).toString('hex')
     }
     
     static defaultSalt() :number

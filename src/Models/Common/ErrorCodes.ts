@@ -6,6 +6,7 @@ export enum APIErrorCode
     
     UserLoginRequest_MissingUsernameOrPassword = 404,
     UserLoginRequest_UsernameOrPasswordIsIncorrect = 405,
+    UserLoginRequest_CannotUpdateUserAuthToken = 406,
 }
 
 export enum CommonErrorCode
