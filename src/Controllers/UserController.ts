@@ -1,8 +1,8 @@
 import express, { Express, Request, Response , Application, NextFunction } from 'express';
 import { UserLoginRequestModel, UserRegisterRequestModel } from '../Models/API_Requests/API_Request_Models';
-import { APIErrorCode } from '../Models/API_Requests/API_Request_ErrorCodes';
+import { APIErrorCode, CommonErrorCode, CommonSuccessCode } from '../Models/Common/ErrorCodes';
 import { APIRequestHandler } from '../Utils/API_Request_Handler';
-import { MongoDBController } from '../MongoDB/MongoDBController';
+import { MongoDBClient } from '../MongoDB/MongoDBClient';
 import { DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
 import { DB_TableName } from '../Configurations/Conf_MongoDB';
 import { PasswordHandler } from '../Utils/User_Password_Handler';
@@ -13,14 +13,65 @@ export class UserController
 {
     static async UserLogin(req :Request, res: Response, next: NextFunction)
     {
-        let loginReq = req.body as UserLoginRequestModel
-        res.send({
-            message: "User login API test success!!",
-            provided_username: loginReq.username,
-            provided_password: loginReq.password,//for testing
-            code: 200
-        })
-        next()
+        try{
+            let loginReq = req.body as UserLoginRequestModel
+            if(!APIRequestHandler.AreParamsValid(loginReq.password, loginReq.username))
+            {
+                throw {
+                    message: "User login failed - please provide username AND password",
+                    code: APIErrorCode.UserLoginRequest_MissingUsernameOrPassword
+                }
+            }
+            
+            
+            const db_client = MongoDBClient.Instance().client
+            const db = db_client.db(DB_TableName.UserData)
+            
+            
+            //Check if user exists
+            const usersData = db.collection<DB_UserModel>("UserData")
+            const targetUser = await usersData.findOne(
+                // {username: registerReq.username}
+                {username: loginReq.username}
+            )
+            
+            
+            //Check if provided credentials are correct
+            {
+                //Check if username exists
+                if (targetUser == null)
+                {
+                    throw {
+                        message: "user login failed, provided credentials are incorrect",
+                        code: APIErrorCode.UserLoginRequest_UsernameOrPasswordIsIncorrect
+                    }
+                }
+                //If username exists, check if the password is correct
+                const passwordIsCorrect:boolean = await PasswordHandler.ComparePassword(loginReq.password, targetUser.hashed_password)
+                if (!passwordIsCorrect)
+                {
+                    throw {
+                        message: "user login failed, provided credentials are incorrect",
+                        code: APIErrorCode.UserLoginRequest_UsernameOrPasswordIsIncorrect
+                    }
+                }
+            }
+            
+            
+            res.send({
+                message: "User login API test success!!",
+                provided_username: loginReq.username,
+                provided_password: loginReq.password,//for testing
+                code: CommonSuccessCode.APIRequestSuccess 
+            })
+            next()
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message,
+                code: e.code
+            })
+        }
     }
     
     static async UserRegister(req :Request, res: Response, next: NextFunction)
@@ -35,7 +86,7 @@ export class UserController
                 }
             }
             
-            const db_client = MongoDBController.Instance().client
+            const db_client = MongoDBClient.Instance().client
             const db = db_client.db(DB_TableName.UserData)
             
             //Check if user already exists
@@ -76,7 +127,7 @@ export class UserController
                 provided_username: registerReq.username,
                 provided_password: registerReq.password,//for testing
                 target_user: targetUser,
-                code: 200
+                code: CommonSuccessCode.APIRequestSuccess 
             })
             next()
         }catch(e:any)
@@ -92,7 +143,7 @@ export class UserController
     {
         res.send({
             message: "User API test success",
-            code: 200
+            code: CommonSuccessCode.APIRequestSuccess
         })
         
         next()

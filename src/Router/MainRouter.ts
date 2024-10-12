@@ -13,8 +13,8 @@ export function MainRouter(): Router
     return userRouter
 }
 
-export function UserAuth()
-{
-    console.log("User authenticated - TODO")
-}
+// export function UserAuth()
+// {
+//     console.log("User authenticated - TODO")
+// }
 

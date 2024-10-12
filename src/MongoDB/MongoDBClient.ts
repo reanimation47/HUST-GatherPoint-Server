@@ -1,7 +1,7 @@
 import * as mongoDB from "mongodb";
-export class MongoDBController//Singleton class
+export class MongoDBClient//Singleton class
 {
-    private static instance: MongoDBController
+    private static instance: MongoDBClient
     private constructor() {}
     static Instance() 
     {
@@ -9,7 +9,7 @@ export class MongoDBController//Singleton class
         {
             return this.instance;
         }
-        this.instance = new MongoDBController();
+        this.instance = new MongoDBClient();
         return this.instance;
     }
     

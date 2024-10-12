@@ -2,7 +2,7 @@ import express, { Express, Request, Response , Application } from 'express';
 import dotenv from 'dotenv';
 
 import { MainRouter } from './Router/MainRouter';
-import { MongoDBController } from './MongoDB/MongoDBController';
+import { MongoDBClient } from './MongoDB/MongoDBClient';
 
 //For env File 
 dotenv.config();
@@ -11,7 +11,7 @@ async function main()
 {
     //Establish connection with MongoDB 
     // const mongoDBcontroller = new MongoDBController()
-    await MongoDBController.Instance().EstablishDBConnection()
+    await MongoDBClient.Instance().EstablishDBConnection()
     console.log("Established connection to mongoDB")
     
     //Start listening to requests
