@@ -11,7 +11,7 @@ async function main()
 {
     //Establish connection with MongoDB 
     // const mongoDBcontroller = new MongoDBController()
-    await MongoDBController.getInstance().EstablishDBConnection()
+    await MongoDBController.Instance().EstablishDBConnection()
     console.log("Established connection to mongoDB")
     
     //Start listening to requests

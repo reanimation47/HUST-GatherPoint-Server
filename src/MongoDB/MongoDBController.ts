@@ -3,7 +3,7 @@ export class MongoDBController//Singleton class
 {
     private static instance: MongoDBController
     private constructor() {}
-    static getInstance() 
+    static Instance() 
     {
         if (this.instance) 
         {
@@ -30,7 +30,7 @@ export class MongoDBController//Singleton class
             
         }finally{
             // Ensures that the client will close when you finish/error
-            await client.close()
+            // await client.close()
         }
     }
     

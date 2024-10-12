@@ -1,4 +1,6 @@
 export enum APIErrorCode
 {
-    UserRegisterRequestMissingUsernameOrPassword = 401
+    UserRegisterRequest_MissingUsernameOrPassword = 401,
+    UserRegisterRequest_UserAlreadyExist = 402,
+    UserRegisterRequest_FailedToInsertNewUserData = 403,
 }
