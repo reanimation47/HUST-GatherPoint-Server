@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import crypto from "crypto"
 import { CommonErrorCode } from "../Models/Common/ErrorCodes"
-import { AuthConf } from "../Configurations/Conf_Authentication"
+import { AuthTokenConf } from "../Configurations/Conf_Authentication"
 export class AuthenticationHandler
 {
     static async HashPassword(pass: string, salt = AuthenticationHandler.defaultSalt())
@@ -24,7 +24,7 @@ export class AuthenticationHandler
     
     static async GenerateRandomAuthToken()
     {
-        return crypto.randomBytes(AuthConf.AuthToken_BytesCount).toString('hex')
+        return crypto.randomBytes(AuthTokenConf.AuthToken_BytesCount).toString('hex')
     }
     
     static defaultSalt() :number

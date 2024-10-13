@@ -1,4 +1,4 @@
-export enum DB_TableName
+export class DB_TableName
 {
-    UserData = "UserData"
+    static UserData = "UserData"
 }

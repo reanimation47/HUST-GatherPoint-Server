@@ -11,7 +11,8 @@ export enum APIErrorCode
 
 export enum CommonErrorCode
 {
-    CannotHashPassword = 410
+    CannotHashPassword = 410,
+    ENV_DATABASE_URL_MISSING = 411,
 }
 
 export enum CommonSuccessCode

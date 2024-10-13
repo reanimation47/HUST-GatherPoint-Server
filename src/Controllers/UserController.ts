@@ -2,12 +2,12 @@ import express, { Express, Request, Response , Application, NextFunction } from 
 import { UserLoginRequestModel, UserRegisterRequestModel } from '../Models/API_Requests/API_Request_Models';
 import { APIErrorCode, CommonErrorCode, CommonSuccessCode } from '../Models/Common/ErrorCodes';
 import { APIRequestHandler } from '../Utils/API_Request_Handler';
-import { MongoDBClient } from '../MongoDB/MongoDBClient';
+import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
 import { DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
 import { DB_TableName } from '../Configurations/Conf_MongoDB';
 import { AuthenticationHandler } from '../Utils/User_Authentication_Handler';
 import { DateHandler } from '../Utils/Date_Handler';
-import { AuthConf } from '../Configurations/Conf_Authentication';
+import { AuthTokenConf } from '../Configurations/Conf_Authentication';
 
 type UserID = Pick<DB_UserModel, "username">
 
@@ -61,7 +61,7 @@ export class UserController
             
             //Generate authentication token & update to user
             const authToken:string = await AuthenticationHandler.GenerateRandomAuthToken()
-            const authToken_epiretime = DateHandler.GetDateTimeXHoursFromNow(AuthConf.AuthToken_Duration_Hours)
+            const authToken_epiretime = DateHandler.GetDateTimeXHoursFromNow(AuthTokenConf.AuthToken_Duration_Hours)
             const updateResult = await usersData.updateOne(
                 {username: loginReq.username}, 
                 {

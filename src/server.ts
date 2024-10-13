@@ -2,7 +2,7 @@ import express, { Express, Request, Response , Application } from 'express';
 import dotenv from 'dotenv';
 
 import { MainRouter } from './Router/MainRouter';
-import { MongoDBClient } from './MongoDB/MongoDBClient';
+import { MongoDBClient } from './ExternalServiceClients/MongoDBClient';
 
 //For env File 
 dotenv.config();

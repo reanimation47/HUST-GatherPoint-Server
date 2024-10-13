@@ -1,4 +1,6 @@
 import * as mongoDB from "mongodb";
+import { AuthAPIConf } from "../Configurations/Conf_Authentication";
+import { APIErrorCode, CommonErrorCode } from "../Models/Common/ErrorCodes";
 export class MongoDBClient//Singleton class
 {
     private static instance: MongoDBClient
@@ -13,12 +15,20 @@ export class MongoDBClient//Singleton class
         return this.instance;
     }
     
-    private db_url: string = "mongodb://localhost:27017"//TODO:hide this
+    private db_url: string | undefined = "mongodb://localhost:27017"//TODO:hide this
     
     private db_client: mongoDB.MongoClient
     get client(): mongoDB.MongoClient {return this.db_client}
     private async connectDB()
     {
+        if (!AuthAPIConf.MongoDB_URL)
+        {
+            throw {
+                message: "env MONGODB_URL is not provided, cannot connect to MongoDB",
+                code: CommonErrorCode.ENV_DATABASE_URL_MISSING 
+            }
+        }
+        this.db_url = AuthAPIConf.MongoDB_URL
         const client: mongoDB.MongoClient = new mongoDB.MongoClient(this.db_url)
         try {
             
