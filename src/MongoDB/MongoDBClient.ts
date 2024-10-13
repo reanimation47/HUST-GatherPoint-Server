@@ -21,7 +21,6 @@ export class MongoDBClient//Singleton class
     {
         const client: mongoDB.MongoClient = new mongoDB.MongoClient(this.db_url)
         try {
-            console.log("Trying to connect to MongoDB")
             
             await client.connect()
             // Send a ping to confirm a successful connection
