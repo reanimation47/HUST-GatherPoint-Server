@@ -19,4 +19,6 @@ export class GoogleMapClient
         this.client = new Client()
     }
     
+    
+    
 }
