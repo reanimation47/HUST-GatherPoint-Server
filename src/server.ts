@@ -25,7 +25,7 @@ async function main()
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
     app.use(function (req, res, next) {
-        // console.log("Middleware called??");
+        console.log(req.header("AuthToken"))
         next();
     });
     app.use(MainRouter())
