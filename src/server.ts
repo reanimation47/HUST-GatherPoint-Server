@@ -25,6 +25,9 @@ async function main()
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
     app.use(function (req, res, next) {
+        console.log("====================")
+        console.log("request received!")
+        console.log(req.url)
         console.log(req.header("AuthToken"))
         next();
     });

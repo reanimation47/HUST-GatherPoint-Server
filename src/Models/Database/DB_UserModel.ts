@@ -6,8 +6,10 @@ export interface DB_UserModel
     
     authentication?: DB_User_Authentication
     
-    search_history?: DB_User_SearchHistory
-    saved_locations?: DB_User_Saved_Locations 
+    locations: DB_User_Locations
+    
+    socials: DB_User_Socials
+    
 }
 
 export enum DB_UserType
@@ -26,9 +28,43 @@ interface DB_User_SearchHistory
 {
     //TODO
 }
-interface DB_User_Saved_Locations
+
+export class DB_User_Locations
 {
-    //TODO
+    constructor(user_addr: string)
+    {
+        this.my_address = user_addr
+    }
+    search_history?: DB_User_SearchHistory
+    my_address: string
+    saved_locations: DB_User_Saved_Locations  = {locations:[]}
+    shared_with_me_locations: DB_User_SharedWithUser_Locations = {locations:[]}
 }
 
+interface DB_User_Saved_Locations
+{
+    locations: LocationInfo[]
+}
 
+interface DB_User_SharedWithUser_Locations
+{
+    locations: LocationInfo[]
+}
+
+interface LocationInfo
+{
+    lat:number
+    lng:number
+    
+    name: string,
+    rating: string //?
+    
+    added_date: string
+}
+
+export class DB_User_Socials
+{
+    friends: string[] = []
+    friend_requests_sent: string[] = []
+    friend_requests_received: string[] = []
+}

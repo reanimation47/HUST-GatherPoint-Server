@@ -3,7 +3,7 @@ import { UserLoginRequestModel, UserRegisterRequestModel } from '../Models/API_R
 import { APIErrorCode, CommonErrorCode, CommonSuccessCode } from '../Models/Common/ErrorCodes';
 import { APIRequestHandler } from '../Utils/API_Request_Handler';
 import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
-import { DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
+import { DB_User_Locations, DB_User_Socials, DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
 import { DB_TableName } from '../Configurations/Conf_MongoDB';
 import { AuthenticationHandler } from '../Utils/User_Authentication_Handler';
 import { DateHandler } from '../Utils/Date_Handler';
@@ -134,7 +134,9 @@ export class UserController
             const insertResult = await usersData.insertOne({
                 username: registerReq.username,
                 hashed_password: await AuthenticationHandler.HashPassword(registerReq.password), //TODO: hash this
-                user_type: DB_UserType.User
+                user_type: DB_UserType.User,
+                socials: new DB_User_Socials(),
+                locations: new DB_User_Locations(registerReq.address)
             })
             
             if (!insertResult.acknowledged)

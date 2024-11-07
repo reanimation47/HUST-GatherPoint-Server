@@ -6,6 +6,7 @@ export interface UserLoginRequestModel
 
 export interface UserRegisterRequestModel
 {
-    username: string,
+    username: string
     password: string
+    address: string
 }
