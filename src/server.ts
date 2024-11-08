@@ -5,6 +5,7 @@ const cors = require('cors');
 
 import { MainRouter } from './Router/MainRouter';
 import { MongoDBClient } from './ExternalServiceClients/MongoDBClient';
+import { GoogleMapClient } from './ExternalServiceClients/GoogleMapClient';
 
 //For env File 
 dotenv.config();
@@ -16,6 +17,10 @@ async function main()
     console.log("Trying to connect to MongoDB")
     await MongoDBClient.Instance().EstablishDBConnection()
     console.log("Established connection to mongoDB")
+    
+    
+    //Init GoogleMapsAPI Client
+    GoogleMapClient.Instance().Init()
     
     //Start listening to requests
     const app: Application = express();

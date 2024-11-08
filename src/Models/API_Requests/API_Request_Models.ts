@@ -10,3 +10,8 @@ export interface UserRegisterRequestModel
     password: string
     address: string
 }
+
+export interface Get_AutoComplete_Predictions_Model
+{
+    input: string
+}

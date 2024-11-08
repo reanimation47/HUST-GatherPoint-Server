@@ -13,6 +13,8 @@ export enum CommonErrorCode
 {
     CannotHashPassword = 410,
     ENV_DATABASE_URL_MISSING = 411,
+    
+    GoogleMapsApiFailed = 412
 }
 
 export enum CommonSuccessCode
