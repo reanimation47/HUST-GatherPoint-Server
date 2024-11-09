@@ -23,7 +23,9 @@ export enum CommonErrorCode
     
     RequestedUserDoesNotExist = 413,
     
-    UserIsNotAuthenticated = 414
+    UserIsNotAuthenticated = 414,
+    
+    AddFriendsFailed = 415
 }
 
 export enum CommonSuccessCode

@@ -7,6 +7,9 @@ import { API_URL } from '../Models/API_Requests/API_Request_URLs';
 
 export class MiddlewareController
 {
+    static header_from_user = "RequestFromUser"
+    static header_auth_token= "AuthToken"
+    
     async Middleware(req :Request, res: Response, next: NextFunction)
     {
         console.log("====================")
@@ -25,8 +28,8 @@ export class MiddlewareController
             }
             
             
-            const username = req.header("RequestFromUser")
-            const auth_token = req.header("AuthToken")
+            const username = req.header(MiddlewareController.header_from_user)
+            const auth_token = req.header(MiddlewareController.header_auth_token)
             if (!username || !auth_token)
             {
                 //TODO: authentication failed
