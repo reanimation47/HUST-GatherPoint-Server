@@ -9,6 +9,11 @@ export enum APIErrorCode
     UserLoginRequest_CannotUpdateUserAuthToken = 406,
 }
 
+export enum NetworkErrorCode
+{
+    CannotReachBackendServer = 444
+}
+
 export enum CommonErrorCode
 {
     CannotHashPassword = 410,
@@ -16,7 +21,9 @@ export enum CommonErrorCode
     
     GoogleMapsApiFailed = 412,
     
-    RequestedUserDoesNotExist = 413
+    RequestedUserDoesNotExist = 413,
+    
+    UserIsNotAuthenticated = 414
 }
 
 export enum CommonSuccessCode

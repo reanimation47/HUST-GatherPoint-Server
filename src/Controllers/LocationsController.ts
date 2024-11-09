@@ -51,6 +51,7 @@ export class LocationsController
                 message: e.message,
                 code: CommonErrorCode.GoogleMapsApiFailed
             })
+            next()
         }
     }
 }

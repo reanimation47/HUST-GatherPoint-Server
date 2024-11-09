@@ -30,7 +30,7 @@ export class SocialsController
             }
             
             res.send({
-                message: "Friend Request Sucess",
+                message: "Friend Request sent Sucess",
                 code: CommonSuccessCode.APIRequestSuccess
             })
             
