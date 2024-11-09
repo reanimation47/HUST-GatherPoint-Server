@@ -15,3 +15,8 @@ export interface Get_AutoComplete_Predictions_Model
 {
     input: string
 }
+
+export interface Social_AddFriend_Request_Model
+{
+    username: string
+}

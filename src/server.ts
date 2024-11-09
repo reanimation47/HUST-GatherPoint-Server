@@ -6,6 +6,7 @@ const cors = require('cors');
 import { MainRouter } from './Router/MainRouter';
 import { MongoDBClient } from './ExternalServiceClients/MongoDBClient';
 import { GoogleMapClient } from './ExternalServiceClients/GoogleMapClient';
+import { MiddlewareController } from './Controllers/MiddlewareController';
 
 //For env File 
 dotenv.config();
@@ -29,12 +30,11 @@ async function main()
     app.use(cors())
     app.use(express.json())
     app.use(express.urlencoded({extended: true}))
+    
+    //Middleware
+    const middlewareControll = new MiddlewareController()
     app.use(function (req, res, next) {
-        console.log("====================")
-        console.log("request received!")
-        console.log(req.url)
-        console.log(req.header("AuthToken"))
-        next();
+        middlewareControll.Middleware(req, res, next)
     });
     app.use(MainRouter())
     app.get('/', (req: Request, res: Response) => {

@@ -14,7 +14,9 @@ export enum CommonErrorCode
     CannotHashPassword = 410,
     ENV_DATABASE_URL_MISSING = 411,
     
-    GoogleMapsApiFailed = 412
+    GoogleMapsApiFailed = 412,
+    
+    RequestedUserDoesNotExist = 413
 }
 
 export enum CommonSuccessCode

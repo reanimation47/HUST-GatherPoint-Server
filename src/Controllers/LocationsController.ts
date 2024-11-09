@@ -45,6 +45,7 @@ export class LocationsController
                 results: final_results,
                 code: CommonSuccessCode.APIRequestSuccess 
             })
+            next()
         }catch(e:any){
             res.send({
                 message: e.message,
