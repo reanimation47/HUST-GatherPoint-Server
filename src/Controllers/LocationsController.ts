@@ -14,6 +14,7 @@ export class LocationsController
             let autoComplete_req = req.body as Get_AutoComplete_Predictions_Model
             //Cache same requests to not waste API calls to Google Maps
             let final_results:string[] = []
+            let isCachedData = false
             const cache_check_result = await CacheHandler.Check_Request_Cache(request_type, autoComplete_req.input)
             
             if (cache_check_result.cachedData == null)
@@ -31,6 +32,7 @@ export class LocationsController
                 await CacheHandler.Set_Request_Cache(request_type, autoComplete_req.input, final_results as any)
             }else
             {
+                isCachedData = true
                 console.log(`Cached autocomplete search entry: ${autoComplete_req.input}`)
                 final_results = cache_check_result.cachedData as Array<string>
             }
@@ -39,7 +41,7 @@ export class LocationsController
             
             res.send({
                 message: "Request success!",
-                isFromCachedResults: "false",
+                isFromCachedResults: isCachedData.toString(),
                 results: final_results,
                 code: CommonSuccessCode.APIRequestSuccess 
             })
