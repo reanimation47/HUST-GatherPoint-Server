@@ -15,6 +15,7 @@ userRouter.post(API_URL.UserRegister, UserController.UserRegister)
 userRouter.post(API_URL.Maps_GetAutoComplete_Predictions, locationController.Get_AutoComplete_Predictions)
 
 userRouter.post(API_URL.Socials_AddFriend, socialController.AddFriend)
+userRouter.post(API_URL.Socials_GetFriendsList, socialController.GetFriendsList)
 userRouter.get('/user-api-test', UserController.UserAPITest)
 
 export function MainRouter(): Router

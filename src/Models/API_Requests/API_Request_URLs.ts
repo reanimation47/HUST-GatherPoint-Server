@@ -5,4 +5,5 @@ export class API_URL
     static Maps_GetAutoComplete_Predictions = "/maps-autocomplete"
     
     static Socials_AddFriend = "/social-addfriend"
+    static Socials_GetFriendsList = "/social-getfriendslist"
 }

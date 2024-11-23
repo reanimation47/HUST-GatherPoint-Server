@@ -25,7 +25,8 @@ export enum CommonErrorCode
     
     UserIsNotAuthenticated = 414,
     
-    AddFriendsFailed = 415
+    AddFriendsFailed = 415,
+    CannotGetFriendList = 416
 }
 
 export enum CommonSuccessCode

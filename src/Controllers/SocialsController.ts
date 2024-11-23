@@ -146,4 +146,52 @@ export class SocialsController
             }
         }
     }
+    
+    async GetFriendsList(req :Request, res: Response, next: NextFunction)
+    {
+        
+        try{
+            
+            //TODO: this whole part repeats in AddFriend function -- start
+            let from_username = req.header(MiddlewareController.header_from_user)
+            
+            const db_client = MongoDBClient.Instance().client
+            const db = db_client.db(DB_TableName.UserData)
+            const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+            
+            //Check if user exists
+            const fromUser = await collection.findOne(
+                {username: from_username}
+            )
+            if(fromUser == null)
+            {
+                //this should not be possible.. Let's just say user is not authenticated.. & redirect them back to Login page'
+                throw {
+                    message: "Uhm You don't exist in DB..?",
+                    code: CommonErrorCode.UserIsNotAuthenticated
+                }
+            }
+            //TODO: this whole part repeats in AddFriend function -- end
+            
+            let list_friends = fromUser.socials?.friends
+            if (!Array.isArray(list_friends))
+            {
+                list_friends = []
+            }
+            
+            res.send({
+                message: `Request Sucess`,
+                result: list_friends,
+                code: CommonSuccessCode.APIRequestSuccess
+            })
+            next()
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "Unknown error",
+                code: CommonErrorCode.CannotGetFriendList
+            })
+            
+        }
+    }
 }
