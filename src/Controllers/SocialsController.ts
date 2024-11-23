@@ -43,6 +43,14 @@ export class SocialsController
                 }
             }
             
+            if(from_username == to_username)
+            {
+                throw {
+                    message: "You cannot send a request to yourself..",
+                    code: CommonErrorCode.AddFriendsFailed
+                }
+            }
+            
             if (fromUser.socials.friend_requests_sent.includes(to_username))
             {
                 throw {
@@ -98,6 +106,8 @@ export class SocialsController
                     message: `You are now friend with ${to_username}`,
                     code: CommonSuccessCode.APIRequestSuccess
                 })
+                next()
+                return
             }
             
             //Normal case, just send a friend request to target user
