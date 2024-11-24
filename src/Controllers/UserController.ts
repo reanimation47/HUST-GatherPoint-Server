@@ -136,7 +136,7 @@ export class UserController
                 hashed_password: await AuthenticationHandler.HashPassword(registerReq.password), //TODO: hash this
                 user_type: DB_UserType.User,
                 socials: new DB_User_Socials(),
-                locations: new DB_User_Locations(registerReq.address)
+                locations: new DB_User_Locations(registerReq.address, registerReq.address_place_id)
             })
             
             if (!insertResult.acknowledged)

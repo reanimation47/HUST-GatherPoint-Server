@@ -31,12 +31,14 @@ interface DB_User_SearchHistory
 
 export class DB_User_Locations
 {
-    constructor(user_addr: string)
+    constructor(user_addr: string, place_id:string)
     {
         this.my_address = user_addr
+        this.my_address_place_id = place_id 
     }
     search_history?: DB_User_SearchHistory
     my_address: string
+    my_address_place_id: string
     saved_locations: DB_User_Saved_Locations  = {locations:[]}
     shared_with_me_locations: DB_User_SharedWithUser_Locations = {locations:[]}
 }
