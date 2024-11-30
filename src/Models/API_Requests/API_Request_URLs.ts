@@ -6,4 +6,5 @@ export class API_URL
     
     static Socials_AddFriend = "/social-addfriend"
     static Socials_GetFriendsList = "/social-getfriendslist"
+    static Socials_GetFriendAddress = "/social-getfriendsaddr"
 }

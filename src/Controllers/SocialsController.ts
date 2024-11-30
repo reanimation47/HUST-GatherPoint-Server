@@ -1,10 +1,11 @@
 import express, { Express, Request, Response , Application, NextFunction } from 'express';
-import { Social_AddFriend_Request_Model } from '../Models/API_Requests/API_Request_Models';
+import { Social_AddFriend_Request_Model, Social_GetFriendAddr_Request_Model } from '../Models/API_Requests/API_Request_Models';
 import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
 import { DB_Collection, DB_TableName } from '../Configurations/Conf_MongoDB';
 import { DB_UserModel } from '../Models/Database/DB_UserModel';
 import { CommonErrorCode, CommonSuccessCode } from '../Models/Common/ErrorCodes';
 import { MiddlewareController } from './MiddlewareController';
+import { Get_Friend_Address_Response_Model } from '../Models/API_Responses/API_Response_Models';
 
 export class SocialsController
 {
@@ -190,6 +191,96 @@ export class SocialsController
             res.send({
                 message: e.message ?? "Unknown error",
                 code: CommonErrorCode.CannotGetFriendList
+            })
+            
+        }
+    }
+    
+    async GetFriendAddress(req :Request, res: Response, next: NextFunction)
+    {
+        try{
+            
+            //TODO: this whole part repeats in AddFriend function -- start
+            let from_username = req.header(MiddlewareController.header_from_user)
+            
+            const db_client = MongoDBClient.Instance().client
+            const db = db_client.db(DB_TableName.UserData)
+            const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+            
+            //Check if user exists
+            const fromUser = await collection.findOne(
+                {username: from_username}
+            )
+            if(fromUser == null)
+            {
+                //this should not be possible.. Let's just say user is not authenticated.. & redirect them back to Login page'
+                throw {
+                    message: "Uhm You don't exist in DB..?",
+                    code: CommonErrorCode.UserIsNotAuthenticated
+                }
+            }
+            //TODO: this whole part repeats in AddFriend function -- end
+            
+            //Check if from-user is a friend with to-user
+            
+            //Start with does from-user even has any friend
+            let list_friends = fromUser.socials?.friends
+            if (!Array.isArray(list_friends))
+            {
+                throw {
+                    message: "You are not friend with target user 1",
+                    code: CommonErrorCode.CannotGetFriendAddress_YouAreNotFriendWithUser
+                }
+            }else
+            {
+                if (list_friends.length <= 0)
+                {
+                    throw {
+                        message: "You are not friend with target user 2",
+                        code: CommonErrorCode.CannotGetFriendAddress_YouAreNotFriendWithUser
+                    }
+                }
+            }
+            
+            //Okay from-user does have some friends, check if to-user is 1 of his friends
+            let to_username = (req.body as Social_GetFriendAddr_Request_Model).username
+            if (!list_friends.includes(to_username))
+            {
+                throw {
+                    message: "You are not friend with target user 3",
+                    code: CommonErrorCode.CannotGetFriendAddress_YouAreNotFriendWithUser
+                }
+            }
+            
+            //Check if user exists
+            const toUser = await collection.findOne(
+                {username: to_username}
+            )
+            if(toUser == null)
+            {
+                //user's friend no longer exist in db?
+                throw {
+                    message: "Uhm your friend does not exist in DB..?",
+                    code: CommonErrorCode.RequestedUserDoesNotExist
+                }
+            }
+            
+            console.log("HLOOOOOOOOOOOOO")
+            console.log(toUser.locations.my_address)
+            const response: Get_Friend_Address_Response_Model = {
+                message: "You can have your friend's address :)",
+                address: toUser.locations.my_address,
+                address_place_id: toUser.locations.my_address_place_id,
+                code: CommonSuccessCode.APIRequestSuccess
+            }
+            res.send(response)
+            
+            next()
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "Unknown error",
+                code: e.code ?? CommonErrorCode.CannotGetFriendAddress_Unknown
             })
             
         }

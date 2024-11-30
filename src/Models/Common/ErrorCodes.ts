@@ -26,7 +26,10 @@ export enum CommonErrorCode
     UserIsNotAuthenticated = 414,
     
     AddFriendsFailed = 415,
-    CannotGetFriendList = 416
+    CannotGetFriendList = 416,
+    
+    CannotGetFriendAddress_Unknown = 417,
+    CannotGetFriendAddress_YouAreNotFriendWithUser = 418
 }
 
 export enum CommonSuccessCode

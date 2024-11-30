@@ -4,6 +4,7 @@ import { Get_AutoComplete_Predictions_Model } from "../Models/API_Requests/API_R
 import express, { Express, Request, Response , Application, NextFunction } from 'express';
 import { CommonErrorCode, CommonSuccessCode } from "../Models/Common/ErrorCodes";
 import { CacheHandler } from "../Utils/Cache_Handler";
+import { Get_AutoComplete_Predictions_Response_Model } from "../Models/API_Responses/API_Response_Models";
 
 interface AutoCompleteResult
 {
@@ -45,12 +46,13 @@ export class LocationsController
             
             
             
-            res.send({
+            const response: Get_AutoComplete_Predictions_Response_Model = {
                 message: "Request success!",
                 isFromCachedResults: isCachedData.toString(),
                 results: final_results,
                 code: CommonSuccessCode.APIRequestSuccess 
-            })
+            }
+            res.send(response)
             next()
         }catch(e:any){
             res.send({
