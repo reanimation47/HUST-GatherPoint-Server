@@ -265,8 +265,6 @@ export class SocialsController
                 }
             }
             
-            console.log("HLOOOOOOOOOOOOO")
-            console.log(toUser.locations.my_address)
             const response: Get_Friend_Address_Response_Model = {
                 message: "You can have your friend's address :)",
                 address: toUser.locations.my_address,

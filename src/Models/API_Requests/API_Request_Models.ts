@@ -17,6 +17,12 @@ export interface Get_AutoComplete_Predictions_Model
     input: string
 }
 
+export interface Get_Best_Locations_Request_Model
+{
+    place_ids: string[]
+    options: any
+}
+
 export interface Social_AddFriend_Request_Model
 {
     username: string

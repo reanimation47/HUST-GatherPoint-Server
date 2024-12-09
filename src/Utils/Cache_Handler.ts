@@ -26,6 +26,7 @@ export class CacheHandler
             
             if (targetCache != null)
             {
+                console.log(`${req_type}-${req_input} is a cached entry :)`)
                 return Promise.resolve({
                     cachedData: targetCache.request_cached_output as any
                 })
@@ -37,13 +38,14 @@ export class CacheHandler
             }
         }catch(e:any)
         {
+            console.warn(`Checking cache for ${req_type}-${req_input} failed: ${e.message??"Unknown"}`)
             return Promise.reject({
                 cachedData: null 
             })
         }
     }
     
-    static async Set_Request_Cache(req_type: string, req_input: string, req_output: string)
+    static async Set_Request_Cache(req_type: string, req_input: string, req_output: any)
     {
         try{
             const DBClient = MongoDBClient.Instance().client
@@ -58,13 +60,17 @@ export class CacheHandler
             
             if (insertResult.acknowledged)
             {
+                console.log(`${req_type}-${req_input} is a new entry :(`)
                 return Promise.resolve()
             }else
             {
+                //Do we need to handle this? worst thing is just the cache wont be cached..
                 return Promise.reject()
             }
         }catch(e:any)
         {
+            //Do we need to handle this? worst thing is just the cache wont be cached..
+            console.warn(`Caching for ${req_type}-${req_input} failed: ${e.message??"Unknown"}`)
             return Promise.reject()
         }
     }
