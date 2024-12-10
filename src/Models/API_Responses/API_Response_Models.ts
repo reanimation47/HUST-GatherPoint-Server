@@ -18,6 +18,7 @@ export interface Get_Best_Locations_Response_Model
 {
     message: string,
     code: number,
+    centerpoint: {lat:number, lng:number}
     result:any
 }
 
