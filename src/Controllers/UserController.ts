@@ -4,10 +4,11 @@ import { APIErrorCode, CommonErrorCode, CommonSuccessCode } from '../Models/Comm
 import { APIRequestHandler } from '../Utils/API_Request_Handler';
 import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
 import { DB_User_Locations, DB_User_Socials, DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
-import { DB_TableName } from '../Configurations/Conf_MongoDB';
+import { DB_Collection, DB_TableName } from '../Configurations/Conf_MongoDB';
 import { AuthenticationHandler } from '../Utils/User_Authentication_Handler';
 import { DateHandler } from '../Utils/Date_Handler';
 import { AuthTokenConf } from '../Configurations/Conf_Authentication';
+import { MiddlewareController } from './MiddlewareController';
 
 type UserID = Pick<DB_UserModel, "username">
 
@@ -163,6 +164,29 @@ export class UserController
                 message: e.message,
                 code: e.code
             })
+        }
+    }
+    
+    static async UserSaveAddress(req :Request, res: Response, next: NextFunction)
+    {
+        
+        let from_username = req.header(MiddlewareController.header_from_user)
+        
+        const db_client = MongoDBClient.Instance().client
+        const db = db_client.db(DB_TableName.UserData)
+        const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+        
+        //Check if user exists
+        const fromUser = await collection.findOne(
+            {username: from_username}
+        )
+        if(fromUser == null)
+        {
+            //this should not be possible.. Let's just say user is not authenticated.. & redirect them back to Login page'
+            throw {
+                message: "Uhm You don't exist in DB..?",
+                code: CommonErrorCode.UserIsNotAuthenticated
+            }
         }
     }
     

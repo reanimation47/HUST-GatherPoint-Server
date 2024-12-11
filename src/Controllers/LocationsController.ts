@@ -82,7 +82,7 @@ export class LocationsController
                     code: CommonErrorCode.GoogleMapsApiFailed
                 }
             }
-            const placesNearby_data = await location_utils.Get_Nearby_Places_By_LatLng(center_latlng)
+            const placesNearby_data = await location_utils.Get_Nearby_Places_By_LatLng(center_latlng, req_model.options)
             if (placesNearby_data == null)
             {
                 throw {
@@ -195,10 +195,16 @@ class LocationsUtility
         }
     }
     
-    async Get_Nearby_Places_By_LatLng(latlng:{lat:number, lng:number})
+    async Get_Nearby_Places_By_LatLng(latlng:{lat:number, lng:number}, options:any = null)
     {
+        
+        //options
+        const _radius = options?.radius ? +options.radius : 10000
+        const _type = options?.type ? options.type : "cafe"
+        
         const request_type = "Get_Nearby_Places_By_LatLng"
-        const cache_entry_format = `lat:${latlng.lat}-lng:${latlng.lng}`
+        const cache_entry_format = `lat:${latlng.lat}-lng:${latlng.lng}-type:${_type}-radius:${_radius}`
+        
         try{
             const cache_check_result = await CacheHandler.Check_Request_Cache(request_type, cache_entry_format)
             if (cache_check_result.cachedData == null)
@@ -207,8 +213,8 @@ class LocationsUtility
                 const args = {
                     params: {
                         key: GoogleMapClient.Instance().private_key,
-                        radius:10000,//TODO
-                        type:"cafe",//TODO
+                        radius:_radius,
+                        type:_type,
                         location: {lat:latlng.lat, lng: latlng.lng}
                     }
                 } as PlacesNearbyRequest 

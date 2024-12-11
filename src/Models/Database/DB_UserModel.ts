@@ -45,7 +45,7 @@ export class DB_User_Locations
 
 interface DB_User_Saved_Locations
 {
-    locations: LocationInfo[]
+    locations: LocationInfo[] | any[]
 }
 
 interface DB_User_SharedWithUser_Locations
