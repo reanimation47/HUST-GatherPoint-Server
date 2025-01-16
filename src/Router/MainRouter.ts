@@ -18,6 +18,7 @@ userRouter.post(API_URL.Maps_Get_BestLocations_By_Adddresses, locationController
 userRouter.post(API_URL.Socials_AddFriend, socialController.AddFriend)
 userRouter.post(API_URL.Socials_GetFriendsList, socialController.GetFriendsList)
 userRouter.post(API_URL.Socials_GetFriendAddress, socialController.GetFriendAddress)
+userRouter.post(API_URL.Socials_RemoveFriend, socialController.RemoveFriend)
 userRouter.get('/user-api-test', UserController.UserAPITest)
 
 export function MainRouter(): Router

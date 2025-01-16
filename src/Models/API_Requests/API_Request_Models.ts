@@ -27,6 +27,11 @@ export interface Social_AddFriend_Request_Model
 {
     username: string
 }
+
+export interface Social_RemoveFriend_Request_Model
+{
+    username: string
+}
 export interface Social_GetFriendAddr_Request_Model
 {
     username: string

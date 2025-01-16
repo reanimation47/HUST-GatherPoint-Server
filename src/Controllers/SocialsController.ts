@@ -1,5 +1,5 @@
 import express, { Express, Request, Response , Application, NextFunction } from 'express';
-import { Social_AddFriend_Request_Model, Social_GetFriendAddr_Request_Model } from '../Models/API_Requests/API_Request_Models';
+import { Social_AddFriend_Request_Model, Social_GetFriendAddr_Request_Model, Social_RemoveFriend_Request_Model } from '../Models/API_Requests/API_Request_Models';
 import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
 import { DB_Collection, DB_TableName } from '../Configurations/Conf_MongoDB';
 import { DB_UserModel } from '../Models/Database/DB_UserModel';
@@ -148,6 +148,96 @@ export class SocialsController
         }
     }
     
+    async RemoveFriend(req :Request, res: Response, next: NextFunction)
+    {
+        try{
+            //TODO: this whole part repeats in AddFriend function -- start
+            let from_username = req.header(MiddlewareController.header_from_user)
+            
+            const db_client = MongoDBClient.Instance().client
+            const db = db_client.db(DB_TableName.UserData)
+            const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+            
+            //Check if user exists
+            const fromUser = await collection.findOne(
+                {username: from_username}
+            )
+            if(fromUser == null)
+            {
+                //this should not be possible.. Let's just say user is not authenticated.. & redirect them back to Login page'
+                throw {
+                    message: "Uhm You don't exist in DB..?",
+                    code: CommonErrorCode.UserIsNotAuthenticated
+                }
+            }
+            
+            //Check target friend to be removed
+            let to_username = (req.body as Social_RemoveFriend_Request_Model).username
+            //Check if user exists
+            const toUser = await collection.findOne(
+                {username: to_username}
+            )
+            
+            if(toUser == null)
+            {
+                //this should not be possible.. 
+                throw {
+                    message: "Uhm You don't exist in DB..?",
+                    code: CommonErrorCode.RequestedUserDoesNotExist
+                }
+            }
+            
+            //Remove from_user in to_user's friendlist
+            if (toUser.socials.friends.includes(from_username?? "username shouldn't be empty.."))
+            {
+                const updateResult1 = await collection.updateOne(
+                    {
+                        username: to_username
+                    }, 
+                    {
+                        $pull: {
+                            "socials.friends": from_username 
+                        }
+                    }
+                )
+                if (!updateResult1.acknowledged) {throw new Error()}
+            }
+            
+            //Remove to_user in from_user's friendlist
+            if (fromUser.socials.friends.includes(to_username?? "username shouldn't be empty.."))
+            {
+                const updateResult1 = await collection.updateOne(
+                    {
+                        username: from_username
+                    }, 
+                    {
+                        $pull: {
+                            "socials.friends": to_username 
+                        }
+                    }
+                )
+                if (!updateResult1.acknowledged) {throw new Error()}
+            }
+            
+            res.send({
+                message: `Remove request succeed`,
+                code: CommonSuccessCode.APIRequestSuccess
+            })
+            
+            next()
+            
+            
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "Unknown error",
+                code: e.code ?? CommonErrorCode.CannotGetFriendList
+            })
+            
+        }
+        
+        
+    }
     async GetFriendsList(req :Request, res: Response, next: NextFunction)
     {
         

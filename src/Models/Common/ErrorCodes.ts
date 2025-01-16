@@ -27,6 +27,7 @@ export enum CommonErrorCode
     
     AddFriendsFailed = 415,
     CannotGetFriendList = 416,
+    CannotRemoveFriend = 417,
     
     CannotGetFriendAddress_Unknown = 417,
     CannotGetFriendAddress_YouAreNotFriendWithUser = 418
