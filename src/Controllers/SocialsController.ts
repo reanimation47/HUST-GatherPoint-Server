@@ -170,6 +170,7 @@ export class SocialsController
                     code: CommonErrorCode.UserIsNotAuthenticated
                 }
             }
+            //TODO: this whole part repeats in AddFriend function -- end
             
             //Check target friend to be removed
             let to_username = (req.body as Social_RemoveFriend_Request_Model).username

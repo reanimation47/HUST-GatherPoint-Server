@@ -3,7 +3,7 @@ import { UserLoginRequestModel, UserRegisterRequestModel } from '../Models/API_R
 import { APIErrorCode, CommonErrorCode, CommonSuccessCode } from '../Models/Common/ErrorCodes';
 import { APIRequestHandler } from '../Utils/API_Request_Handler';
 import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
-import { DB_User_Locations, DB_User_Socials, DB_UserModel, DB_UserType } from '../Models/Database/DB_UserModel';
+import { DB_User_Locations, DB_User_Socials, DB_UserModel, DB_UserType, LocationInfo } from '../Models/Database/DB_UserModel';
 import { DB_Collection, DB_TableName } from '../Configurations/Conf_MongoDB';
 import { AuthenticationHandler } from '../Utils/User_Authentication_Handler';
 import { DateHandler } from '../Utils/Date_Handler';
@@ -167,9 +167,98 @@ export class UserController
         }
     }
     
-    static async UserSaveAddress(req :Request, res: Response, next: NextFunction)
+    static async UserSavePlaceToFavorites(req :Request, res: Response, next: NextFunction)
     {
+        UserController.TogglePlaceFromFavorites(req, res, next, true)
+    }
+    
+    static async UserRemovePlaceFromFavorites(req :Request, res: Response, next: NextFunction)
+    {
+        UserController.TogglePlaceFromFavorites(req, res, next, false)
+    }
+    
+    static async TogglePlaceFromFavorites(req :Request, res: Response, next: NextFunction, is_adding: boolean)
+    {
+        try{
+            //TODO: this whole part repeats in AddFriend function -- start
+            let from_username = req.header(MiddlewareController.header_from_user)
+            
+            const db_client = MongoDBClient.Instance().client
+            const db = db_client.db(DB_TableName.UserData)
+            const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+            
+            //Check if user exists
+            const fromUser = await collection.findOne(
+                {username: from_username}
+            )
+            if(fromUser == null)
+            {
+                //this should not be possible.. Let's just say user is not authenticated.. & redirect them back to Login page'
+                throw {
+                    message: "Uhm You don't exist in DB..?",
+                    code: CommonErrorCode.UserIsNotAuthenticated
+                }
+            }
+            //TODO: this whole part repeats in AddFriend function -- end
+            
+            let locationData: LocationInfo = req.body.data as LocationInfo
+            if (is_adding)
+            {
+                const updateResult1 = await collection.updateOne(
+                    {
+                        username: from_username
+                    }, 
+                    {
+                        $push: {
+                            "locations.saved_locations.locations" : locationData
+                        },
+                    }
+                )
+                if (!updateResult1.acknowledged) {throw new Error()}
+            }else
+            {
+                const updateResult1 = await collection.updateOne(
+                    {
+                        username: from_username
+                    }, 
+                    {
+                        $pull: {
+                            "locations.saved_locations.locations" : {place_id: locationData.place_id}
+                        },
+                    }
+                )
+                if (!updateResult1.acknowledged) {throw new Error()}
+            }
+            res.send({
+                message: "Place API succeeded",
+                // provided_username: registerReq.username,
+                // provided_password: registerReq.password,//for testing
+                code: CommonSuccessCode.APIRequestSuccess 
+            })
+
+        }catch(e:any)
+        {
+            
+            res.send({
+                message: e.message ?? "unknown error",
+                code: e.code ?? CommonErrorCode.CannotSavePlaceToFavorite
+            })
+        }
+    }
+    
+    static UserAPITest(req :Request, res: Response, next: NextFunction)
+    {
+        res.send({
+            message: "User API test success",
+            code: CommonSuccessCode.APIRequestSuccess
+        })
         
+        next()
+    }
+    
+    static async Utils_GetUserDataFromDB(req :Request)
+    {
+        //TODO: this whole part repeats in AddFriend function -- start
         let from_username = req.header(MiddlewareController.header_from_user)
         
         const db_client = MongoDBClient.Instance().client
@@ -188,15 +277,8 @@ export class UserController
                 code: CommonErrorCode.UserIsNotAuthenticated
             }
         }
-    }
-    
-    static UserAPITest(req :Request, res: Response, next: NextFunction)
-    {
-        res.send({
-            message: "User API test success",
-            code: CommonSuccessCode.APIRequestSuccess
-        })
+        //TODO: this whole part repeats in AddFriend function -- end
         
-        next()
+        return Promise.resolve(fromUser)
     }
 }

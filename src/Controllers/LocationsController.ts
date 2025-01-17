@@ -7,6 +7,7 @@ import { CacheHandler } from "../Utils/Cache_Handler";
 import { Get_AutoComplete_Predictions_Response_Model, Get_Best_Locations_Response_Model } from "../Models/API_Responses/API_Response_Models";
 import { placeDetails } from "@googlemaps/google-maps-services-js/dist/places/details";
 import { placesNearby } from "@googlemaps/google-maps-services-js/dist/places/placesnearby";
+import { UserController } from "./UserController";
 
 interface AutoCompleteResult
 {
@@ -93,11 +94,33 @@ export class LocationsController
             
             // console.log(placesNearby_data)
             
+            //Should also provided the info if user has added this place to favorites
+            const map_favorite_places: any[] = []// <place_id, $is_favorited$>
+            const user_data = await UserController.Utils_GetUserDataFromDB(req)
+            placesNearby_data.forEach(placeData => {
+                // placeData.place_id
+                let is_favorite = false
+                user_data.locations.saved_locations.locations.forEach(favorite_location => {
+                    if (favorite_location.place_id.toString() == placeData.place_id)
+                    {
+                        is_favorite = true
+                    }
+                })
+                
+                let new_fav_place_mapping = {
+                    place_id: placeData.place_id ?? "error",
+                    is_favorite: is_favorite
+                }
+                map_favorite_places.push(new_fav_place_mapping)
+            })
+            
+            // console.log(map_favorite_places)
             const response: Get_Best_Locations_Response_Model = {
                 message: "Request success!",
                 code: CommonSuccessCode.APIRequestSuccess,
                 centerpoint: center_latlng,
-                result:  placesNearby_data
+                result:  placesNearby_data,
+                map_favorite_places: map_favorite_places
             }
             
             res.send(response)

@@ -20,6 +20,7 @@ export interface Get_Best_Locations_Response_Model
     code: number,
     centerpoint: {lat:number, lng:number}
     result:any
+    map_favorite_places: {place_id: string, is_favorite: boolean}[]
 }
 
 export interface Get_Friend_Address_Response_Model 
@@ -29,3 +30,4 @@ export interface Get_Friend_Address_Response_Model
     address_place_id: string
     code: number
 }
+
