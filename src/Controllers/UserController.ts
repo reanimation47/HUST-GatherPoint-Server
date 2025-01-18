@@ -177,6 +177,7 @@ export class UserController
         UserController.TogglePlaceFromFavorites(req, res, next, false)
     }
     
+    
     static async TogglePlaceFromFavorites(req :Request, res: Response, next: NextFunction, is_adding: boolean)
     {
         try{
@@ -244,6 +245,31 @@ export class UserController
                 code: e.code ?? CommonErrorCode.CannotSavePlaceToFavorite
             })
         }
+    }
+    
+    static async UserGetSavedFavoritePlaces(req :Request, res: Response, next: NextFunction)
+    {
+        try{
+            const userData = await UserController.Utils_GetUserDataFromDB(req)
+            
+            res.send({
+                message: "API call success",
+                code: CommonSuccessCode.APIRequestSuccess,
+                result: userData.locations.saved_locations.locations,
+            })
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "unknown error",
+                code: e.code ?? CommonErrorCode.CannotGetSavedFavoritePlaces
+            })
+        }
+        
+    }
+    
+    static async UserGetSharedWithPlaces(req :Request, res: Response, next: NextFunction)
+    {
+        
     }
     
     static UserAPITest(req :Request, res: Response, next: NextFunction)

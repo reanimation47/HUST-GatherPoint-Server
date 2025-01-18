@@ -5,6 +5,9 @@ export class API_URL
     static UserSavePlaceToFavorites = "/user-save-place-to-favorites"
     static UserRemovePlaceFromFavorites = "/user-remove-place-from-favorites"
     
+    static UserGetPlacesFromFavorites = "/user-get-places-from-favorites"
+    static UserGetSharedWithPlaces= "/user-get-shared-with-places"
+    
     static Maps_GetAutoComplete_Predictions = "/maps-autocomplete"
     static Maps_Get_BestLocations_By_Adddresses= "/maps-getbestlocations"
     
