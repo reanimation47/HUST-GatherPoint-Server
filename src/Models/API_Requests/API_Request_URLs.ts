@@ -4,6 +4,7 @@ export class API_URL
     static UserRegister = "/user-register"
     static UserSavePlaceToFavorites = "/user-save-place-to-favorites"
     static UserRemovePlaceFromFavorites = "/user-remove-place-from-favorites"
+    static UserSharePlaceWithFriends = "/user-share-place-with-friends"
     
     static UserGetPlacesFromFavorites = "/user-get-places-from-favorites"
     static UserGetSharedWithPlaces= "/user-get-shared-with-places"

@@ -32,6 +32,8 @@ export enum CommonErrorCode
     CannotSavePlaceToFavorite = 418,
     CannotGetSavedFavoritePlaces = 418,
     
+    CannotSharePlace = 419,
+    
     CannotGetFriendAddress_Unknown = 417,
     CannotGetFriendAddress_YouAreNotFriendWithUser = 418
 }

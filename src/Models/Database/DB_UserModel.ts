@@ -65,6 +65,7 @@ export interface LocationInfo
     vicinity: string
     
     added_date: string
+    shared_by?: string
 }
 
 export class DB_User_Socials

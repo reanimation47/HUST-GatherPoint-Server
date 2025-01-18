@@ -1,5 +1,5 @@
 import express, { Express, Request, Response , Application, NextFunction } from 'express';
-import { UserLoginRequestModel, UserRegisterRequestModel } from '../Models/API_Requests/API_Request_Models';
+import { UserLoginRequestModel, UserRegisterRequestModel, UserSharePlaceWithFriendsRequestModel } from '../Models/API_Requests/API_Request_Models';
 import { APIErrorCode, CommonErrorCode, CommonSuccessCode } from '../Models/Common/ErrorCodes';
 import { APIRequestHandler } from '../Utils/API_Request_Handler';
 import { MongoDBClient } from '../ExternalServiceClients/MongoDBClient';
@@ -272,6 +272,56 @@ export class UserController
         
     }
     
+    static async UserSharePlaceWithFriends(req :Request, res: Response, next: NextFunction)
+    {
+        try{
+            const userData = await UserController.Utils_GetUserDataFromDB(req)
+            const share_data = req.body.data as UserSharePlaceWithFriendsRequestModel
+            for (let i = 0; i < share_data.friends.length; i ++)
+            {
+                const friend_username = share_data.friends[i]
+                const friendData = await UserController.Utils_GetUserDataFromDB_ByUsername(friend_username)
+                const db_client = MongoDBClient.Instance().client
+                const db = db_client.db(DB_TableName.UserData)
+                const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+                
+                
+                const locationData: LocationInfo = share_data.place
+                locationData.shared_by = userData.username
+                if (friendData.locations.shared_with_me_locations.locations.find(location => location.place_id == locationData.place_id))
+                {
+                    //TODO: This means someone has already shared this place with this friend.. Do we skip it? ..
+                }
+                const updateResult1 = await collection.updateOne(
+                    {
+                        username: friend_username
+                    }, 
+                    {
+                        $push: {
+                            "locations.shared_with_me_locations.locations" : locationData
+                        },
+                    }
+                )
+                if (!updateResult1.acknowledged) {throw new Error()}
+                
+            }
+            
+            res.send({
+                message: "Place API succeeded",
+                // provided_username: registerReq.username,
+                // provided_password: registerReq.password,//for testing
+                code: CommonSuccessCode.APIRequestSuccess 
+            })
+            
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "unknown error",
+                code: e.code ?? CommonErrorCode.CannotSharePlace
+            })
+        }
+    }
+    
     static UserAPITest(req :Request, res: Response, next: NextFunction)
     {
         res.send({
@@ -286,6 +336,20 @@ export class UserController
     {
         //TODO: this whole part repeats in AddFriend function -- start
         let from_username = req.header(MiddlewareController.header_from_user)
+        if (from_username == undefined)
+        {
+            throw {
+                code: 0,
+                message: "UserController.Utils_GetUserDataFromDB() -> You did not provide a username in Request"
+            }
+        }
+        return await UserController.Utils_GetUserDataFromDB_ByUsername(from_username)
+    }
+    
+    static async Utils_GetUserDataFromDB_ByUsername(username: string)
+    {
+        //TODO: this whole part repeats in AddFriend function -- start
+        let from_username = username 
         
         const db_client = MongoDBClient.Instance().client
         const db = db_client.db(DB_TableName.UserData)

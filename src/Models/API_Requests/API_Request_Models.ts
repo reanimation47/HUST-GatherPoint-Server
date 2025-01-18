@@ -1,3 +1,5 @@
+import type { LocationInfo } from "../Database/DB_UserModel"
+
 export interface UserLoginRequestModel
 {
     username: string,
@@ -10,6 +12,12 @@ export interface UserRegisterRequestModel
     password: string
     address: string
     address_place_id: string
+}
+
+export interface UserSharePlaceWithFriendsRequestModel
+{
+    place: LocationInfo
+    friends: string[] //list of usernames
 }
 
 export interface Get_AutoComplete_Predictions_Model
