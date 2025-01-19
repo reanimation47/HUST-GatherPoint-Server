@@ -242,7 +242,7 @@ export class UserController
             
             res.send({
                 message: e.message ?? "unknown error",
-                code: e.code ?? CommonErrorCode.CannotSavePlaceToFavorite
+                code: e.code ?? CommonErrorCode.CannotSavePlaceToFavorite //TODO, need to separate for removing place too
             })
         }
     }
@@ -264,13 +264,67 @@ export class UserController
                 code: e.code ?? CommonErrorCode.CannotGetSavedFavoritePlaces
             })
         }
-        
     }
     
     static async UserGetSharedWithPlaces(req :Request, res: Response, next: NextFunction)
     {
-        
+        try{
+            const userData = await UserController.Utils_GetUserDataFromDB(req)
+            
+            res.send({
+                message: "API call success",
+                code: CommonSuccessCode.APIRequestSuccess,
+                result: userData.locations.shared_with_me_locations.locations,
+            })
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "unknown error",
+                code: e.code ?? CommonErrorCode.CannotGetSavedFavoritePlaces
+            })
+        }
     }
+    
+    static async UserRemoveSharedWithPlaces(req :Request, res: Response, next: NextFunction)
+    {
+        try{
+            const userData = await UserController.Utils_GetUserDataFromDB(req)
+            
+            const db_client = MongoDBClient.Instance().client
+            const db = db_client.db(DB_TableName.UserData)
+            const collection = db.collection<DB_UserModel>(DB_Collection.UserData)
+            
+            let locationData = req.body.data as {place_id:string} 
+            const updateResult1 = await collection.updateOne(
+                {
+                    username: userData.username 
+                }, 
+                {
+                    $pull: {
+                        "locations.shared_with_me_locations.locations" : {place_id: locationData.place_id}
+                    },
+                }
+            )
+            if (!updateResult1.acknowledged) {throw new Error()}
+            
+            res.send({
+                message: "Place API succeeded",
+                // provided_username: registerReq.username,
+                // provided_password: registerReq.password,//for testing
+                code: CommonSuccessCode.APIRequestSuccess 
+            })
+            
+        }catch(e:any)
+        {
+            res.send({
+                message: e.message ?? "Place API failed",
+                // provided_username: registerReq.username,
+                // provided_password: registerReq.password,//for testing
+                code: e.code ?? CommonErrorCode.CannotRemovePlace
+            })
+        }
+    }
+    
     
     static async UserSharePlaceWithFriends(req :Request, res: Response, next: NextFunction)
     {

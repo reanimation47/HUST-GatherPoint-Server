@@ -13,6 +13,7 @@ userRouter.post(API_URL.UserLogin, UserController.UserLogin)
 userRouter.post(API_URL.UserRegister, UserController.UserRegister)
 userRouter.post(API_URL.UserSavePlaceToFavorites, UserController.UserSavePlaceToFavorites)
 userRouter.post(API_URL.UserRemovePlaceFromFavorites, UserController.UserRemovePlaceFromFavorites)
+userRouter.post(API_URL.UserRemoveSharedWithPlace, UserController.UserRemoveSharedWithPlaces)
 
 userRouter.post(API_URL.UserGetPlacesFromFavorites, UserController.UserGetSavedFavoritePlaces)
 userRouter.post(API_URL.UserGetSharedWithPlaces, UserController.UserGetSharedWithPlaces)
