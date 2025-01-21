@@ -21,6 +21,7 @@ export interface Get_Best_Locations_Response_Model
     centerpoint: {lat:number, lng:number}
     result:any
     map_favorite_places: {place_id: string, is_favorite: boolean}[]
+    friends_geocodes: {lat:number, lng:number}[]
 }
 
 export interface Get_Friend_Address_Response_Model 

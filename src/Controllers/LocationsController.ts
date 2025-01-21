@@ -75,14 +75,17 @@ export class LocationsController
             // console.log("?????")
             // console.log(req_model)
             console.log(req_model.place_ids)
-            const center_latlng = await location_utils.Get_Center_LatLng_By_PlaceIds(req_model.place_ids, false)
-            if (center_latlng == undefined)
+            const get_center_latlng_result = await location_utils.Get_Center_LatLng_By_PlaceIds(req_model.place_ids, false)
+            if (get_center_latlng_result == undefined)
             {
                 throw {
                     message: "Failed to get center LatLng",
                     code: CommonErrorCode.GoogleMapsApiFailed
                 }
             }
+            const center_latlng = get_center_latlng_result.center_point
+            
+            
             const placesNearby_data = await location_utils.Get_Nearby_Places_By_LatLng(center_latlng, req_model.options)
             if (placesNearby_data == null)
             {
@@ -120,7 +123,8 @@ export class LocationsController
                 code: CommonSuccessCode.APIRequestSuccess,
                 centerpoint: center_latlng,
                 result:  placesNearby_data,
-                map_favorite_places: map_favorite_places
+                map_favorite_places: map_favorite_places,
+                friends_geocodes: get_center_latlng_result.geocodes_from_provided_placeids
             }
             
             res.send(response)
@@ -165,13 +169,17 @@ class LocationsUtility
                 }
             }
             
-            return this.getGeographicCenter(all_locations)
+            const result_object: Get_Center_LatLng_By_PlaceIds_ResultModel = {
+                center_point: this.getGeographicCenter(all_locations),
+                geocodes_from_provided_placeids: all_locations// Only returns 1 geocode because we actually only have processed 1 place_id
+            }
+            return result_object
         }
         
         /*
         The Cheating Way: (I'm doing this because its more simple and will cost less money for Maps api calls..)
         I'll just pick a random place_id from provided list, use (Google Maps Client).placeDetails() to get the geocode (LatLngLiteral)
-        NOTE: this gonna use the GoogleMaps API call 2 times.. much cheaper option here
+        NOTE: this will use the GoogleMaps API call 2 times.. much cheaper option here
         */
         if (use_cheating_way)
         {
@@ -182,7 +190,11 @@ class LocationsUtility
             {
                 throw Error("Get_Place_Details_By_PlaceId failed..")
             }
-            return placeDetals_data.geometry?.location
+            const result_object: Get_Center_LatLng_By_PlaceIds_ResultModel = {
+                center_point: placeDetals_data.geometry?.location ?? {lat:0, lng:0},
+                geocodes_from_provided_placeids: [placeDetals_data.geometry?.location ?? {lat:0, lng:0}]// Only returns 1 geocode because we actually only have processed 1 place_id
+            }
+            return result_object
         }
     }
     
@@ -293,4 +305,10 @@ class LocationsUtility
     
       return { lat: centerLat, lng: centerLng };
     }
+}
+
+interface Get_Center_LatLng_By_PlaceIds_ResultModel {
+    center_point: LatLngLiteral
+    geocodes_from_provided_placeids: LatLngLiteral[]
+ 
 }
